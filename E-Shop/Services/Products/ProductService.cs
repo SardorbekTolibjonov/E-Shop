@@ -12,13 +12,15 @@ public class ProductService : IProductService
     {
         this.memoryStorageBroker = new MemoryStorageBroker();
     }
-    public Product[] AddCart(int[] id)
+    public Product[] AddCart(int[] ids)
     {
         Product[] products = this.memoryStorageBroker.ReadAllProducts();
-        if (!IsProductAvailable(products))
+        
+
+        if (!IsProductAvailable(products) || !IsIdAvailable(ids))
             return new Product[0]; 
 
-        return AddProductToCart(id, products);
+        return AddProductToCart(ids, products);
     }
 
     public Product[] GetAllProduct()
@@ -32,16 +34,16 @@ public class ProductService : IProductService
     private bool IsProductAvailable(Product[] products) =>
      products != null && products.Length > 0;
 
-    private Product[] AddProductToCart(int[] id, Product[] products)
+    private Product[] AddProductToCart(int[] ids, Product[] products)
     {
-        int count = id.Length, cartIndex = 0;
+        int count = ids.Length, cartIndex = 0;
         Product[] cartProducts = new Product[count];
 
         foreach (Product product in products)
         {
-            for (int i = 0; i < id.Length; i++)
+            for (int i = 0; i < ids.Length; i++)
             {
-                if (product.Id == id[i])
+                if (product.Id == ids[i])
                     cartProducts[cartIndex++] = product;
             }
             
@@ -49,4 +51,7 @@ public class ProductService : IProductService
 
         return cartProducts;
     }
+
+    private bool IsIdAvailable(int[] ids) =>
+        ids != null && ids.Length > 0;
 }
